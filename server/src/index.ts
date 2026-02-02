@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 import * as admin from "firebase-admin";
 
-const port = 3000;
+const port = process.env.port || 3000;
 
 var serviceAccount = require("../atom-angular-challenge-firebase-adminsdk.json");
 

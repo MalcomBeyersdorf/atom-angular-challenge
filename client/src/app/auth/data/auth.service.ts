@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, catchError, of, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   email: string;
@@ -18,7 +19,7 @@ export class AuthService {
 
   readonly user = computed(() => this.currUser());
 
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
 
   checkUser(email: string): Observable<User | null> {
     return this.http.get<User | null>(`${this.apiUrl}/users/${email}`).pipe(

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { AuthService } from '../../auth/data/auth.service';
+import { environment } from '../../../environments/environment';
 
 export interface Task {
   id?: string;
@@ -22,7 +23,7 @@ export class TaskService {
   private tasksSignal = signal<Task[]>([]);
   readonly tasks = computed(() => this.tasksSignal());
 
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
 
   loadTasks() {
     const user = this.authService.user();
