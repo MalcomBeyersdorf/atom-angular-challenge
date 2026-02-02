@@ -69,15 +69,25 @@ This repository contains the solution for the Atom Angular Challenge. It feature
 
    ```bash
    cd server
-   npm run build
-   firebase emulators:start --only functions
+   npm run dev
    ```
 
 3. **Run Frontend**:
+
    ```bash
    cd client
    ng serve
    ```
+
+   Open `http://localhost:4200`
+
+4. **Or Just run docker compose to get all up**:
+
+   ```bash
+   docker compose up -d
+
+   ```
+
    Open `http://localhost:4200`
 
 ## Design Decisions
