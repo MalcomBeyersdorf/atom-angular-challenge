@@ -1,9 +1,14 @@
 import cors from "cors";
 import express from "express";
 import * as admin from "firebase-admin";
-import * as functions from "firebase-functions";
 
-admin.initializeApp();
+const port = 3000;
+
+var serviceAccount = require("../atom-angular-challenge-firebase-adminsdk.json");
+
+export const firebase = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const app = express();
 app.use(cors({ origin: true }));
@@ -20,4 +25,6 @@ import userRoutes from "./routes/user.routes";
 app.use("/users", userRoutes);
 app.use("/tasks", taskRoutes);
 
-export const api = functions.https.onRequest(app);
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});

@@ -1,8 +1,8 @@
-import * as admin from "firebase-admin";
+import { firebase } from "..";
 import { Task } from "../models/types";
 
 export class TaskRepository {
-  private collection = admin.firestore().collection("tasks");
+  private collection = firebase.firestore().collection("tasks");
 
   async findAllByUser(userEmail: string): Promise<Task[]> {
     const snapshot = await this.collection

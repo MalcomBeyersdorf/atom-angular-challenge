@@ -22,14 +22,13 @@ export class TaskService {
   private tasksSignal = signal<Task[]>([]);
   readonly tasks = computed(() => this.tasksSignal());
 
-  private apiUrl =
-    'http://localhost:5001/atom-angular-challenge/us-central1/api/tasks';
+  private apiUrl = 'http://localhost:3000';
 
   loadTasks() {
     const user = this.authService.user();
     if (!user) return;
 
-    this.http.get<Task[]>(`${this.apiUrl}?email=${user.email}`).subscribe({
+    this.http.get<Task[]>(`${this.apiUrl}/?email=${user.email}`).subscribe({
       next: (tasks) => this.tasksSignal.set(tasks),
       error: (err) => console.error('Error loading tasks', err),
     });
@@ -40,7 +39,7 @@ export class TaskService {
     if (!user) return;
 
     this.http
-      .post<Task>(this.apiUrl, {
+      .post<Task>(`${this.apiUrl}/tasks/`, {
         userEmail: user.email,
         title,
         description,
@@ -61,7 +60,7 @@ export class TaskService {
     );
 
     this.http
-      .patch(`${this.apiUrl}/${task.id}`, {
+      .patch(`${this.apiUrl}/tasks/${task.id}`, {
         isCompleted: updatedTask.isCompleted,
       })
       .subscribe({
@@ -81,7 +80,7 @@ export class TaskService {
     );
 
     this.http
-      .patch(`${this.apiUrl}/${taskId}`, { title, description })
+      .patch(`${this.apiUrl}/tasks/${taskId}`, { title, description })
       .subscribe({
         error: (err) => {
           console.error('Error updating task', err);

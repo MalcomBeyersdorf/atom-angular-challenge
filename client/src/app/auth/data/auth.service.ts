@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, catchError, map, of, tap } from 'rxjs';
+import { Observable, catchError, of, tap } from 'rxjs';
 
 export interface User {
   email: string;
@@ -18,24 +18,13 @@ export class AuthService {
 
   readonly user = computed(() => this.currUser());
 
-  // Base URL should be environment based but hardcoding for now as per simple setup
-  private apiUrl =
-    'http://localhost:5001/atom-angular-challenge/us-central1/api';
-  // NOTE: User needs to replace project-id/region if different. I'll make this generic or ask user to check.
+  private apiUrl = 'http://localhost:3000';
 
-  checkUser(email: string): Observable<boolean> {
-    return this.http
-      .get<{ exists: boolean; user: User }>(`${this.apiUrl}/users/${email}`)
-      .pipe(
-        map((res) => {
-          if (res.exists) {
-            this.currUser.set(res.user);
-            return true;
-          }
-          return false;
-        }),
-        catchError(() => of(false)),
-      );
+  checkUser(email: string): Observable<User | null> {
+    return this.http.get<User | null>(`${this.apiUrl}/users/${email}`).pipe(
+      tap((user) => this.currUser.set(user)),
+      catchError(() => of(null)),
+    );
   }
 
   createUser(email: string): Observable<User | null> {

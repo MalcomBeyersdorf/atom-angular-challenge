@@ -56,6 +56,7 @@ import { AuthService } from '../data/auth.service';
   styles: [
     `
       .login-container {
+        gap: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -92,8 +93,8 @@ export class LoginComponent {
   onSubmit() {
     if (!this.email) return;
 
-    this.authService.checkUser(this.email).subscribe((exists) => {
-      if (exists) {
+    this.authService.checkUser(this.email).subscribe((user) => {
+      if (user) {
         this.router.navigate(['/tasks']);
       } else {
         this.showConfirm = true;

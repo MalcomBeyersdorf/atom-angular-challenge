@@ -28,6 +28,7 @@ import { Task, TaskService } from '../data/task.service';
   ],
   template: `
     <h2 mat-dialog-title>{{ data.task ? 'Edit Task' : 'New Task' }}</h2>
+    <br />
     <mat-dialog-content>
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Title</mat-label>
@@ -35,7 +36,7 @@ import { Task, TaskService } from '../data/task.service';
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Description</mat-label>
-        <textarea matInput [(ngModel)]="localDesc"></textarea>
+        <textarea matInput [(ngModel)]="localDesc" rows="3"></textarea>
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
@@ -74,7 +75,7 @@ export class TaskDialogComponent {
       <div class="header">
         <h1>My Tasks</h1>
         <div class="actions">
-          <span>{{ authService.user()?.email }}</span>
+          <span class="user-email">{{ authService.user()?.email }}</span>
           <button mat-icon-button (click)="authService.logout()" title="Logout">
             <mat-icon>logout</mat-icon>
           </button>
@@ -89,7 +90,7 @@ export class TaskDialogComponent {
 
       <div class="task-list">
         <mat-card
-          *ngFor="let task of taskService.tasks()"
+          *ngFor="let task of taskService.tasks(); trackBy: trackByTask"
           class="task-card"
           [class.completed]="task.isCompleted"
         >
@@ -102,7 +103,7 @@ export class TaskDialogComponent {
               ></mat-checkbox>
               <div class="task-info">
                 <h3 [class.strike]="task.isCompleted">{{ task.title }}</h3>
-                <p>{{ task.description }}</p>
+                <p *ngIf="task.description">{{ task.description }}</p>
                 <small class="date">{{
                   task.createdAt | date: 'medium'
                 }}</small>
@@ -124,6 +125,7 @@ export class TaskDialogComponent {
         </mat-card>
 
         <div *ngIf="taskService.tasks().length === 0" class="empty-state">
+          <mat-icon>assignment</mat-icon>
           <p>No tasks found. Create one to get started!</p>
         </div>
       </div>
@@ -132,56 +134,130 @@ export class TaskDialogComponent {
   styles: [
     `
       .tasks-container {
-        max-width: 800px;
+        max-width: 900px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 24px;
+        min-height: 100vh;
+        background-color: #f5f5f5;
       }
+
       .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        background: white;
+        padding: 20px 24px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
+
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .user-email {
+        font-size: 14px;
+        color: #666;
+      }
+
       .add-task-btn {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
         text-align: right;
       }
+
+      .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
       .task-card {
-        margin-bottom: 10px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+        &:hover {
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
         &.completed {
-          background-color: #f9f9f9;
-          opacity: 0.8;
+          background-color: #fafafa;
+          opacity: 0.7;
         }
       }
+
       .task-header {
         display: flex;
         align-items: flex-start;
-        gap: 15px;
+        gap: 16px;
       }
+
       .task-info {
         flex: 1;
+        min-width: 0;
+
         h3 {
-          margin: 0 0 5px 0;
+          margin: 0 0 8px 0;
+          font-size: 18px;
+          font-weight: 500;
+          color: #333;
+          word-wrap: break-word;
+
+          &.strike {
+            text-decoration: line-through;
+            color: #999;
+          }
         }
+
         p {
-          margin: 0 0 5px 0;
+          margin: 0 0 8px 0;
           color: #666;
+          font-size: 14px;
+          line-height: 1.5;
+          word-wrap: break-word;
         }
+
         .date {
           font-size: 12px;
           color: #999;
         }
-        .strike {
-          text-decoration: line-through;
-        }
       }
+
       .task-actions {
         display: flex;
+        gap: 4px;
+        flex-shrink: 0;
       }
+
       .empty-state {
         text-align: center;
-        padding: 40px;
-        color: #999;
+        padding: 60px 40px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+        mat-icon {
+          font-size: 64px;
+          width: 64px;
+          height: 64px;
+          color: #ccc;
+          margin-bottom: 16px;
+        }
+
+        p {
+          margin: 0;
+          color: #999;
+          font-size: 16px;
+        }
       }
     `,
   ],
@@ -194,6 +270,10 @@ export class TasksListComponent implements OnInit {
   ngOnInit() {
     this.taskService.loadTasks();
   }
+
+  trackByTask = (_: number, task: Task): string => {
+    return task.id!;
+  };
 
   openTaskDialog(task?: Task) {
     const dialogRef = this.dialog.open(TaskDialogComponent, {

@@ -14,7 +14,7 @@ export class UserController {
         return;
       }
       const user = await userService.findUser(email);
-      res.json({ exists: !!user, user });
+      return res.json(user); // User | null
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
