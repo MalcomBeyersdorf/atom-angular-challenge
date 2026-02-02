@@ -30,7 +30,7 @@ This repository contains the solution for the Atom Angular Challenge. It feature
   - **Repository**: Data Access
   - **Models**: Type definitions
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 ├── client/
@@ -48,7 +48,7 @@ This repository contains the solution for the Atom Angular Challenge. It feature
 │   └── src/index.ts        # Entry Point
 ```
 
-## 🏗 Setup & Run
+## Setup & Run
 
 ### Prerequisites
 
@@ -88,5 +88,7 @@ This repository contains the solution for the Atom Angular Challenge. It feature
 - **Standalone Components**: Reduced boilerplate by avoiding NgModules.
 
 ---
+
+**Pattern selected for the implementation:** [ngx-struct](https://github.com/MalcomBeyersdorf/ngx-struct)
 
 **Author**: Malcom Beyersdorf
